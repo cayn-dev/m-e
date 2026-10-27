@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Cayn — Web Designer and Developer</title>
+  <desc id="desc">A calm, dark blue-grey banner with a glass-inspired circular mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0d1214"/><stop offset=".55" stop-color="#1b292f"/><stop offset="1" stop-color="#2d434d"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#91c5d5" stop-opacity=".22"/><stop offset="1" stop-color="#91c5d5" stop-opacity="0"/></radialGradient>
+    <linearGradient id="glass" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".88"/><stop offset="1" stop-color="#b7d9e2" stop-opacity=".52"/></linearGradient>
+  </defs>
+  <rect width="1200" height="340" rx="28" fill="url(#bg)"/>
+  <circle cx="980" cy="90" r="350" fill="url(#glow)"/>
+  <circle cx="1000" cy="178" r="210" fill="none" stroke="#d9edf2" stroke-opacity=".1"/>
+  <circle cx="1000" cy="178" r="170" fill="none" stroke="#d9edf2" stroke-opacity=".08" stroke-width="30"/>
+  <g transform="translate(96 82)">
+    <circle cx="88" cy="88" r="72" fill="url(#glass)" fill-opacity=".14" stroke="#e3f4f7" stroke-opacity=".5"/>
+    <path d="M119 55a46 46 0 1 0 0 66" fill="none" stroke="url(#glass)" stroke-linecap="round" stroke-width="15"/>
+    <circle cx="129" cy="123" r="8" fill="#d9f1f6"/>
+  </g>
+  <text x="300" y="148" fill="#f1f6f7" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="600" letter-spacing="-3">Cayn</text>
+  <text x="304" y="198" fill="#bad2d9" font-family="Arial, Helvetica, sans-serif" font-size="21" letter-spacing="4">WEB DESIGNER  ·  DEVELOPER  ·  DIGITAL CREATOR</text>
+  <path d="M304 231h430" stroke="#d7eff4" stroke-opacity=".28"/>
+  <text x="304" y="268" fill="#d9e5e8" font-family="Arial, Helvetica, sans-serif" font-size="18">Independent by design. Based in Italy, working worldwide.</text>
+</svg>
