@@ -184,4 +184,12 @@ html[data-experience-prompt="open"]{overflow:hidden!important;overscroll-behavio
 .spline-status:not([hidden])::before{width:8px;height:8px;border:1px solid rgba(210,237,246,.42);border-top-color:#e9f8fd;border-radius:50%;content:"";animation:splineSpinner .8s linear infinite}
 .about-spline-stage[data-spline-state="error"] .spline-status::before{display:none}
 .scroll-footer{flex-wrap:wrap}
+.github-repo-link{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.035));box-shadow:inset 0 1px rgba(255,255,255,.14);color:var(--text);font-size:11px;font-weight:600;text-decoration:none;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s ease,background .28s ease,box-shadow .28s ease}
+.github-repo-link:hover{transform:translateY(-2px);border-color:rgba(205,234,243,.4);background:linear-gradient(135deg,rgba(205,234,243,.2),rgba(255,255,255,.06));box-shadow:inset 0 1px rgba(255,255,255,.24),0 9px 24px rgba(0,0,0,.16)}
+.github-repo-link svg{width:17px;height:17px;flex:none}
+.github-repo-arrow{color:var(--muted);font-size:12px;transition:transform .25s ease}
+.github-repo-link:hover .github-repo-arrow{transform:translate(2px,-2px)}
+[data-theme="light"] .github-repo-link{border-color:rgba(27,40,45,.16);background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.3));box-shadow:inset 0 1px rgba(255,255,255,.9),0 8px 18px rgba(18,35,42,.08);color:#192124}
+[data-theme="light"] .github-repo-link:hover{border-color:rgba(41,83,98,.34);background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(210,234,241,.65))}
+@media(max-width:560px){.github-repo-link{order:3;padding:8px 12px;font-size:10px}.scroll-footer>span{order:1}.scroll-footer>a[href="#home"]{order:2}.scroll-footer button{order:4}}
 @keyframes splineSpinner{to{transform:rotate(360deg)}}
