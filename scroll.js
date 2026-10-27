@@ -31,7 +31,7 @@
   let recommendedMode = 'performance';
   let userMotionPreference = '';
 
-  try { userMotionPreference = localStorage.getItem('cayn-scroll-motion') || ''; } catch { /* Storage can be blocked. */ }
+  try { userMotionPreference = localStorage.getItem('cayn-scroll-motion-v2') || ''; } catch { /* Storage can be blocked. */ }
   if (root.dataset.motion !== 'full' && root.dataset.motion !== 'reduce') {
     root.dataset.motion = userMotionPreference === 'full' || userMotionPreference === 'reduce'
       ? userMotionPreference
@@ -73,7 +73,7 @@
     root.dataset.motion = mode;
     if (persist) {
       userMotionPreference = mode;
-      try { localStorage.setItem('cayn-scroll-motion', mode); } catch { /* Storage is optional. */ }
+      try { localStorage.setItem('cayn-scroll-motion-v2', mode); } catch { /* Storage is optional. */ }
     }
     updateMotionControl();
     if (mode === 'reduce') {
