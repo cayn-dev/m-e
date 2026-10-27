@@ -35,7 +35,7 @@
   if (root.dataset.motion !== 'full' && root.dataset.motion !== 'reduce') {
     root.dataset.motion = userMotionPreference === 'full' || userMotionPreference === 'reduce'
       ? userMotionPreference
-      : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduce' : 'full');
+      : 'full';
   }
 
   const setTheme = (theme, persist = false) => {
