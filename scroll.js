@@ -21,8 +21,7 @@
   const fullExperienceButton = document.querySelector('#experience-full');
   const closeExperienceButton = document.querySelector('#experience-close');
   const experienceSettingsButton = document.querySelector('#experience-settings');
-  let splineApplication = null;
-  let splineRuntimePromise = null;
+  let splineFrame = null;
   let splineLoadPromise = null;
   let splineObserver = null;
   let splineGeneration = 0;
@@ -78,11 +77,11 @@
     updateMotionControl();
     if (mode === 'reduce') {
       video?.pause();
-      splineApplication?.stop();
+      stopSplineScene();
       revealEverything();
     } else {
       playVideo();
-      splineApplication?.play();
+      if (root.dataset.experience === 'full') observeSplineScene();
     }
   };
 
@@ -130,23 +129,14 @@
     return limitedHardware || slowConnection ? 'performance' : 'full';
   };
 
-  const loadSplineRuntime = () => {
-    if (!splineRuntimePromise) {
-      splineRuntimePromise = import('https://cdn.spline.design/@splinetool/runtime@2.0.103/build/runtime.js')
-        .catch(error => { splineRuntimePromise = null; throw error; });
-    }
-    return splineRuntimePromise;
-  };
-
   const stopSplineScene = () => {
     splineGeneration += 1;
     splineObserver?.disconnect();
     splineObserver = null;
     splineLoadPromise = null;
-    const app = splineApplication;
-    splineApplication = null;
-    try { app?.dispose(); } catch { /* Ignore cleanup errors from a stale WebGL context. */ }
-    splineStage?.querySelector('canvas')?.remove();
+    splineFrame?.remove();
+    splineFrame = null;
+    splineStage?.querySelector('iframe')?.remove();
     if (splineStatus) {
       splineStatus.hidden = true;
       splineStatus.textContent = '';
@@ -166,49 +156,40 @@
     splineStage.dataset.splineState = 'loading';
     if (splineStatus) {
       splineStatus.hidden = false;
-      splineStatus.textContent = 'Preparing the interactive mark…';
+      splineStatus.textContent = document.documentElement.lang === 'it'
+        ? 'Caricamento della scena 3D…'
+        : 'Loading the 3D scene…';
     }
 
     const generation = ++splineGeneration;
-    try { splineApplication?.dispose(); } catch { /* A failed prior canvas may already be gone. */ }
-    splineApplication = null;
-    splineStage.querySelector('canvas')?.remove();
-    const canvas = document.createElement('canvas');
-    canvas.className = 'about-spline-canvas';
-    canvas.setAttribute('role', 'img');
-    canvas.setAttribute('aria-label', 'Interactive glass Cayn sculpture');
-    splineStage.insertBefore(canvas, splineStatus || null);
-
-    splineLoadPromise = (async () => {
-      try {
-        const { Application } = await loadSplineRuntime();
-        if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
-        const app = new Application(canvas);
-        splineApplication = app;
-        await app.load(sceneUrl);
-        if (generation !== splineGeneration || root.dataset.experience !== 'full') {
-          app.dispose();
-          if (splineApplication === app) splineApplication = null;
-          return;
-        }
-        // Give the scene a wider safety margin so the mark stays inside the About card.
-        app.setZoom(.48);
-        app.setBackgroundColor('transparent');
-        if (root.dataset.motion === 'reduce') app.stop();
-        splineStage.dataset.splineState = 'ready';
-        if (splineStatus) splineStatus.hidden = true;
-      } catch {
-        if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
-        try { splineApplication?.dispose(); } catch { /* Ignore cleanup errors from a failed scene load. */ }
-        splineApplication = null;
-        splineStage.dataset.splineState = 'error';
-        if (splineStatus) {
-          splineStatus.hidden = false;
-          splineStatus.textContent = 'The 3D mark could not load. The rest of the portfolio is still available.';
-        }
-        splineLoadPromise = null;
+    const frame = document.createElement('iframe');
+    frame.className = 'about-spline-embed';
+    frame.title = document.documentElement.lang === 'it'
+      ? 'Scena Spline animata: rotazione oscillante della luna'
+      : 'Animated Spline scene: moon rotation wobble';
+    frame.loading = 'eager';
+    frame.allow = 'autoplay; fullscreen; xr-spatial-tracking';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.addEventListener('load', () => {
+      if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
+      splineStage.dataset.splineState = 'ready';
+      if (splineStatus) splineStatus.hidden = true;
+    }, { once: true });
+    frame.addEventListener('error', () => {
+      if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
+      splineStage.dataset.splineState = 'error';
+      if (splineStatus) {
+        splineStatus.hidden = false;
+        splineStatus.textContent = document.documentElement.lang === 'it'
+          ? 'Impossibile caricare la scena 3D. Il resto del portfolio è disponibile.'
+          : 'The 3D scene could not load. The rest of the portfolio is still available.';
       }
-    })();
+      splineLoadPromise = null;
+    }, { once: true });
+    splineFrame = frame;
+    splineStage.insertBefore(frame, splineStatus || null);
+    frame.src = sceneUrl;
+    splineLoadPromise = Promise.resolve(frame);
     return splineLoadPromise;
   };
 
@@ -235,8 +216,8 @@
     }
     if (mode === 'full') {
       if (root.dataset.motion === 'full') playVideo();
-      splineApplication?.play();
-      observeSplineScene();
+      if (root.dataset.motion === 'full') observeSplineScene();
+      else stopSplineScene();
     } else if (mode === 'mobile') {
       if (root.dataset.motion === 'full') playVideo(); else video?.pause();
       stopSplineScene();
