@@ -195,3 +195,6 @@ html[data-experience-prompt="open"]{overflow:hidden!important;overscroll-behavio
 [data-theme="light"] .github-repo-link:hover{border-color:rgba(41,83,98,.34);background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(210,234,241,.65))}
 @media(max-width:560px){.github-repo-link{order:3;padding:8px 12px;font-size:10px}.scroll-footer>span{order:1}.scroll-footer>a[href="#home"]{order:2}.scroll-footer button{order:4}}
 @keyframes splineSpinner{to{transform:rotate(360deg)}}
+
+/* Match the public Spline viewport to the square About frame. */
+.about-spline-embed{width:100%;height:100%;transform:translate(-50%,-50%);transform-origin:center}
