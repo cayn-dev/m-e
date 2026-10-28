@@ -10,9 +10,6 @@
   const menuToggle = document.querySelector('#scroll-menu-toggle');
   const menu = document.querySelector('#scroll-menu');
   const header = document.querySelector('[data-header]');
-  const splineStage = document.querySelector('#about-spline-stage');
-  const splineStatus = document.querySelector('#spline-status');
-  const aboutSection = document.querySelector('#about');
   const experienceDialog = document.querySelector('#experience-dialog');
   const experienceTitle = document.querySelector('#experience-title');
   const experienceDescription = document.querySelector('#experience-description');
@@ -21,10 +18,6 @@
   const fullExperienceButton = document.querySelector('#experience-full');
   const closeExperienceButton = document.querySelector('#experience-close');
   const experienceSettingsButton = document.querySelector('#experience-settings');
-  let splineFrame = null;
-  let splineLoadPromise = null;
-  let splineObserver = null;
-  let splineGeneration = 0;
   let previousFocus = null;
   let detectedProfile = 'full';
   let recommendedMode = 'performance';
@@ -77,11 +70,9 @@
     updateMotionControl();
     if (mode === 'reduce') {
       video?.pause();
-      stopSplineScene();
       revealEverything();
     } else {
       playVideo();
-      if (root.dataset.experience === 'full') observeSplineScene();
     }
   };
 
@@ -129,86 +120,6 @@
     return limitedHardware || slowConnection ? 'performance' : 'full';
   };
 
-  const stopSplineScene = () => {
-    splineGeneration += 1;
-    splineObserver?.disconnect();
-    splineObserver = null;
-    splineLoadPromise = null;
-    splineFrame?.remove();
-    splineFrame = null;
-    splineStage?.querySelector('iframe')?.remove();
-    if (splineStatus) {
-      splineStatus.hidden = true;
-      splineStatus.textContent = '';
-    }
-    if (splineStage) {
-      splineStage.dataset.splineState = 'idle';
-      splineStage.hidden = true;
-    }
-  };
-
-  const loadSplineScene = () => {
-    if (!splineStage || root.dataset.experience !== 'full' || splineLoadPromise) return splineLoadPromise;
-    const sceneUrl = splineStage.dataset.scene;
-    if (!sceneUrl) return null;
-
-    splineStage.hidden = false;
-    splineStage.dataset.splineState = 'loading';
-    if (splineStatus) {
-      splineStatus.hidden = false;
-      splineStatus.textContent = document.documentElement.lang === 'it'
-        ? 'Caricamento della scena 3D…'
-        : 'Loading the 3D scene…';
-    }
-
-    const generation = ++splineGeneration;
-    const frame = document.createElement('iframe');
-    frame.className = 'about-spline-embed';
-    frame.title = document.documentElement.lang === 'it'
-      ? 'Scena Spline animata: rotazione oscillante della luna'
-      : 'Animated Spline scene: moon rotation wobble';
-    frame.loading = 'eager';
-    frame.allow = 'autoplay; fullscreen; xr-spatial-tracking';
-    frame.referrerPolicy = 'strict-origin-when-cross-origin';
-    frame.addEventListener('load', () => {
-      if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
-      splineStage.dataset.splineState = 'ready';
-      if (splineStatus) splineStatus.hidden = true;
-    }, { once: true });
-    frame.addEventListener('error', () => {
-      if (generation !== splineGeneration || root.dataset.experience !== 'full') return;
-      splineStage.dataset.splineState = 'error';
-      if (splineStatus) {
-        splineStatus.hidden = false;
-        splineStatus.textContent = document.documentElement.lang === 'it'
-          ? 'Impossibile caricare la scena 3D. Il resto del portfolio è disponibile.'
-          : 'The 3D scene could not load. The rest of the portfolio is still available.';
-      }
-      splineLoadPromise = null;
-    }, { once: true });
-    splineFrame = frame;
-    splineStage.insertBefore(frame, splineStatus || null);
-    frame.src = sceneUrl;
-    splineLoadPromise = Promise.resolve(frame);
-    return splineLoadPromise;
-  };
-
-  const observeSplineScene = () => {
-    if (!aboutSection || !splineStage || root.dataset.experience !== 'full') return;
-    splineObserver?.disconnect();
-    if (!('IntersectionObserver' in window)) {
-      loadSplineScene();
-      return;
-    }
-    splineObserver = new IntersectionObserver(entries => {
-      if (!entries.some(entry => entry.isIntersecting) || root.dataset.experience !== 'full') return;
-      splineObserver?.disconnect();
-      splineObserver = null;
-      loadSplineScene();
-    }, { rootMargin: '240px 0px', threshold: 0 });
-    splineObserver.observe(aboutSection);
-  };
-
   const applyExperience = (mode, persist = true) => {
     root.dataset.experience = mode;
     if (persist) {
@@ -216,14 +127,10 @@
     }
     if (mode === 'full') {
       if (root.dataset.motion === 'full') playVideo();
-      if (root.dataset.motion === 'full') observeSplineScene();
-      else stopSplineScene();
     } else if (mode === 'mobile') {
       if (root.dataset.motion === 'full') playVideo(); else video?.pause();
-      stopSplineScene();
     } else {
       video?.pause();
-      stopSplineScene();
     }
   };
 
@@ -234,19 +141,19 @@
     if (reason === 'mobile') {
       experienceKicker.textContent = 'Designed for your phone';
       experienceTitle.textContent = 'Try the mobile experience.';
-      experienceDescription.textContent = 'A lighter mobile setup skips the 3D sculpture, while keeping the full portfolio, every text section and the homepage entrance animation.';
+      experienceDescription.textContent = 'The mobile setup keeps every section and uses lighter entrance and scroll animations for a smoother experience on your phone.';
       recommendedButton.textContent = 'Use the mobile version';
-      fullExperienceButton.textContent = 'Continue with the 3D scene';
+      fullExperienceButton.textContent = 'Continue with full motion';
     } else if (reason === 'performance') {
       experienceKicker.textContent = 'A smoother fit for this computer';
       experienceTitle.textContent = 'Keep the page feeling fast.';
-      experienceDescription.textContent = 'This device reports limited memory or processing capacity. Performance mode skips the 3D sculpture and keeps the portfolio text and lightweight page animations.';
+      experienceDescription.textContent = 'This device reports limited memory or processing capacity. Performance mode pauses the background video and uses lighter scroll animations while keeping all portfolio content.';
       recommendedButton.textContent = 'Enable performance mode';
-      fullExperienceButton.textContent = 'Continue with the 3D scene';
+      fullExperienceButton.textContent = 'Continue with full motion';
     } else {
       experienceKicker.textContent = 'Portfolio preferences';
       experienceTitle.textContent = 'Choose your experience.';
-      experienceDescription.textContent = 'The lighter experience skips the 3D sculpture to save graphics and memory, while keeping the portfolio content and homepage animation.';
+      experienceDescription.textContent = 'The lighter experience pauses the background video and simplifies scroll animations to save graphics and memory while keeping all portfolio content.';
       recommendedButton.textContent = 'Enable performance mode';
       fullExperienceButton.textContent = 'Use the full experience';
     }

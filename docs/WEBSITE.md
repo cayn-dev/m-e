@@ -4,7 +4,7 @@ Portfolio personale di Cayn (Jacopo), web designer e developer indipendente con 
 
 ## Il sito
 
-Una pagina editoriale a scorrimento, con tema chiaro/scuro, controlli di movimento, animazioni progressive, elementi Liquid Glass e una modalità leggera per mobile o dispositivi meno performanti. La scena 3D Spline viene caricata solo nell'esperienza completa e quando la sezione About si avvicina allo schermo.
+Una pagina editoriale a scorrimento, con tema chiaro/scuro, controlli di movimento, animazioni progressive, elementi Liquid Glass e una modalità leggera per mobile o dispositivi meno performanti.
 
 ### Progetti
 
@@ -27,7 +27,7 @@ Siti web aziendali, landing page, design UI/UX, restyling, applicazioni web e st
 index.html          pagina principale
 styles.css          stile e layout
 scroll.css          animazioni, modalità leggere e dettagli Liquid Glass
-scroll.js           navigazione, scroll, tema, motion e scena Spline
+scroll.js           navigazione, scroll, tema e motion
 assets/             loghi, immagini e poster
 fonts/              font locali e relative licenze
 ```
@@ -40,7 +40,7 @@ Il sito è HTML, CSS e JavaScript statico: non richiede Node, Bun o un processo 
 python -m http.server 8000
 ```
 
-Poi apri `http://localhost:8000`. In alternativa, puoi aprire `index.html` direttamente; per provare il caricamento della scena Spline e i comportamenti del browser, è preferibile un server locale.
+Poi apri `http://localhost:8000`. In alternativa, puoi aprire `index.html` direttamente; per provare i comportamenti del browser, è preferibile un server locale.
 
 ## Pubblicazione su Vercel
 
